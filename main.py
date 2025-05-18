@@ -4,12 +4,12 @@ import json
 from astrbot.api.event import filter, AstrMessageEvent
 from astrbot.api.star import Context, Star, register
 from astrbot.api import logger
-import asyncio
+from astrbot.core.star.star_tools import StarTools
 
-from config_service import ConfigService
-from rule_factory import RuleFactory
-from request_template_engine import RequestTemplateEngine
-from response_formatter import ResponseFormatter
+from .config_service import ConfigService
+from .rule_factory import RuleFactory
+from .request_template_engine import RequestTemplateEngine
+from .response_formatter import ResponseFormatter
 
 @register("astrbot_plugin_external_api", "YourName", "通过简单指令调用外部API", "1.0.0", "https://github.com/yourusername/astrbot_plugin_external_api")
 class ExternalAPIPlugin(Star):
@@ -26,7 +26,7 @@ class ExternalAPIPlugin(Star):
             config: 插件配置
         """
         super().__init__(context)
-        
+
         # 初始化组件
         self.config_service = ConfigService()
         self.rule_factory = RuleFactory()
@@ -42,10 +42,11 @@ class ExternalAPIPlugin(Star):
     async def initialize(self):
         """插件初始化"""
         logger.info("开始初始化外部API插件...")
+        print(self.config)
         
         # 加载插件配置
         try:
-            if self.config:
+            if self.config.apis:
                 self.config_service._config = self.config
                 self.config_service._parse_config()
                 logger.info("从传入配置加载API配置成功")
@@ -143,8 +144,8 @@ class ExternalAPIPlugin(Star):
     
     def _get_data_dir(self):
         """获取插件数据目录"""
-        return str(self.context.get_data_dir())
-    
+        return str(StarTools.get_data_dir())
+
     @filter.command("ea")
     async def handle_ea_command(self, event: AstrMessageEvent):
         """处理/ea指令

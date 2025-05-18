@@ -1,11 +1,11 @@
 # rule_factory.py
 from typing import Dict, Type, List, Optional
-from rules.abstract_rule import AbstractRule
-from rules.regex_rule import RegexRule
-from rules.keyword_rule import KeywordRule
-from rules.command_rule import CommandRule
-from rules.prefix_rule import PrefixRule
-from rules.default_rule import DefaultRule
+from .rules.abstract_rule import AbstractRule
+from .rules.regex_rule import RegexRule
+from .rules.keyword_rule import KeywordRule
+from .rules.command_rule import CommandRule
+from .rules.prefix_rule import PrefixRule
+from .rules.default_rule import DefaultRule
 
 class RuleFactory:
     """规则工厂：创建并管理各类规则

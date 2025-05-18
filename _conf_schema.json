@@ -21,7 +21,7 @@
   },
   "apis": {
     "description": "API配置列表",
-    "type": "array",
+    "type": "list",
     "items": {
       "name": {
         "description": "API唯一标识符",
@@ -87,7 +87,7 @@
   },
   "rules": {
     "description": "路由规则配置",
-    "type": "array",
+    "type": "list",
     "hint": "规则格式：匹配类型,匹配模式,目标API,路径覆盖(可选),HTTP方法覆盖(可选)"
   }
 }
