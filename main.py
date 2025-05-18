@@ -146,51 +146,6 @@ class ExternalAPIPlugin(Star):
         """获取插件数据目录"""
         return str(StarTools.get_data_dir())
 
-    @filter.command("ea")
-    async def handle_ea_command(self, event: AstrMessageEvent):
-        """处理/ea指令
-        
-        此指令将后续文本作为整体传递给规则引擎进行处理
-        """
-        if not self.initialized:
-            yield event.plain_result("插件尚未初始化完成，请稍后再试")
-            return
-        
-        # 提取指令后的内容
-        message = event.message_str
-        content = message[3:].strip() if message.startswith("/ea") else ""
-        
-        if not content:
-            yield event.plain_result("请在/ea后输入要处理的内容")
-            return
-        
-        # 匹配规则
-        matched, params = self.rule_factory.match_message(content)
-        if not matched:
-            yield event.plain_result("没有匹配的规则")
-            return
-        
-        # 获取目标API
-        api_name = params.get("api_name")
-        if not api_name:
-            yield event.plain_result("未指定目标API")
-            return
-        
-        # 发送请求
-        yield event.plain_result(f"正在请求API: {api_name}...")
-        
-        success, response = await self.request_engine.send_request(api_name, params)
-        
-        # 格式化响应
-        result = self.response_formatter.format_response(
-            api_name,
-            success,
-            response,
-            response.get("status_code", 200) if isinstance(response, dict) else 200
-        )
-        
-        yield event.plain_result(result)
-    
     @filter.event_message_type(filter.EventMessageType.ALL)
     async def handle_all_messages(self, event: AstrMessageEvent):
         """处理所有消息
@@ -200,15 +155,14 @@ class ExternalAPIPlugin(Star):
         if not self.initialized:
             return
         
-        # 跳过/ea命令，由专用处理器处理
         message = event.message_str
-        if message.startswith("/ea"):
-            return
         
         # 匹配规则
         matched, params = self.rule_factory.match_message(message)
         if not matched:
             return
+        
+        print(f"匹配到规则: {params}")
         
         # 获取目标API
         api_name = params.get("api_name")
