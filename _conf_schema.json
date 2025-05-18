@@ -1,0 +1,93 @@
+{
+  "global": {
+    "description": "全局配置",
+    "type": "object",
+    "items": {
+      "proxy": {
+        "description": "HTTP代理，格式为host:port",
+        "type": "string",
+        "hint": "留空表示不使用代理"
+      },
+      "timeout": {
+        "description": "API请求超时时间（秒）",
+        "type": "int",
+        "default": 30
+      },
+      "default_api": {
+        "description": "默认使用的API名称",
+        "type": "string"
+      }
+    }
+  },
+  "apis": {
+    "description": "API配置列表",
+    "type": "array",
+    "items": {
+      "name": {
+        "description": "API唯一标识符",
+        "type": "string"
+      },
+      "endpoint": {
+        "description": "API基础URL",
+        "type": "string",
+        "hint": "例如: https://api.example.com"
+      },
+      "headers": {
+        "description": "默认请求头",
+        "type": "object",
+        "hint": "可添加认证信息、内容类型等"
+      },
+      "methods": {
+        "description": "路径对应的HTTP方法",
+        "type": "object",
+        "editor_mode": true,
+        "editor_language": "json",
+        "hint": "可以为单个字符串或嵌套对象，用于指定不同路径使用的HTTP方法"
+      },
+      "preprocess": {
+        "description": "请求预处理配置",
+        "type": "object",
+        "items": {
+          "enabled": {
+            "description": "是否启用预处理",
+            "type": "bool",
+            "default": false
+          },
+          "template": {
+            "description": "请求模板",
+            "type": "object",
+            "editor_mode": true,
+            "editor_language": "json"
+          }
+        }
+      },
+      "response": {
+        "description": "响应处理配置",
+        "type": "object",
+        "items": {
+          "extract": {
+            "description": "数据提取配置",
+            "type": "object",
+            "editor_mode": true,
+            "editor_language": "json",
+            "hint": "使用JSONPath风格的路径提取数据，例如$.data.result"
+          },
+          "fallback": {
+            "description": "提取失败时的默认消息",
+            "type": "string"
+          },
+          "format_template": {
+            "description": "响应格式化模板",
+            "type": "string",
+            "hint": "使用{{字段名}}引用响应数据中的字段"
+          }
+        }
+      }
+    }
+  },
+  "rules": {
+    "description": "路由规则配置",
+    "type": "array",
+    "hint": "规则格式：匹配类型,匹配模式,目标API,路径覆盖(可选),HTTP方法覆盖(可选)"
+  }
+}

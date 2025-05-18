@@ -1,0 +1,50 @@
+{
+  "global": {
+    "proxy": "",
+    "timeout": 30,
+    "default_api": "local_test"
+  },
+  "apis": [
+    {
+      "name": "local_test",
+      "endpoint": "http://localhost:8999",
+      "headers": {
+        "Content-Type": "application/json",
+        "User-Agent": "AstrBot-ExternalAPI/1.0"
+      },
+      "methods": {
+        "/hello": "POST",
+        "DEFAULT": "GET"
+      },
+      "preprocess": {
+        "enabled": true,
+        "template": {
+          "body": {
+            "message": "$1",
+            "timestamp": "{{timestamp}}",
+            "source": "astrbot"
+          }
+        }
+      },
+      "response": {
+        "extract": {
+          "default": "$.data",
+          "by_status": {
+            "200": "$.data.result",
+            "4xx": "$.error.message",
+            "5xx": "$.error"
+          }
+        },
+        "fallback": "API调用失败",
+        "format_template": "API响应: {{result}}"
+      }
+    }
+  ],
+  "rules": [
+    "REGEX,^请求\\s+(.+)$,local_test,/hello,POST",
+    "COMMAND,/call,local_test,/hello,POST",
+    "KEYWORD,测试,local_test,/hello,POST",
+    "PREFIX,api,local_test,/hello,POST",
+    "DEFAULT,local_test"
+  ]
+}
